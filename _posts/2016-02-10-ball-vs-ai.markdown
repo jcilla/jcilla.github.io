@@ -1,0 +1,100 @@
+---
+layout: post
+title:  "Ball Math pt. II"
+date:   2016-02-10 20:21:00 -0800
+categories: volleyballad
+---
+<script src='https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML'></script>
+
+Here I'll be going over more techniques I used for the AI. Specifically:
+
+**1. How can a player tell where the ball will land?**
+
+This is obviously pretty useful, otherwise you could never get to the ball before it touches the ground. I actually don't do it the hard math way, since that would involve some quadratic equation nastiness.
+
+Instead, I attach a LineRenderer component to the ball. By incrementally calculating a new position using the current velocity and adding it to the LineRenderer's vertices, I can draw out the general trajectory of the ball through the air. It's very accurate, and is also great for debugging. I can make it clear later on so it isn't visible.
+
+``` csharp
+// C#
+void UpdateTrajectory()
+{
+    Vector3 pos = transform.position;
+    Rigidbody body = GetComponent<Rigidbody>();
+    Vector3 vel = body.velocity;
+    for (int i = 0; i < NUMVERTS; i++)
+    {
+    	// Cache these somewhere, since you can't access
+    	// directly from a LineRenderer
+        vertices[i] = pos;
+        trajectory.SetPosition(i, pos);
+
+        vel += Physics.gravity * Time.fixedDeltaTime;
+        pos += vel * Time.fixedDeltaTime;
+    }
+    
+}
+```
+
+![Trajectory Path](/res/blog/linerenderer-example.gif)
+{:
+	title="Trajectory Path"
+}
+
+So now that I have the LineRenderer being drawn, how can I use it to find out where the ball will land? I have a function in my ball class that will determine whether the ball will pass through a given plane, and if it will, the specific point that it will pass through. 
+
+``` csharp
+// C#
+public bool PlaneIntersection(Plane plane, out Vector3 intersection)
+{
+    // Start at the second segment so we don't
+    // return our current position as an intersection
+    for (int i = 1; i < NUMVERTS - 1; i++)
+    {
+    	// Cached values from before
+        Vector3 dir = vertices[i + 1] - vertices[i];
+        Ray r = new Ray(vertices[i], dir.normalized);
+
+        float distance;
+        plane.Raycast(r, out distance);
+        if (distance > 0 && distance < dir.magnitude)
+        {
+            intersection = r.GetPoint(distance);
+            return true;
+        }
+    }
+
+    intersection = Vector3.zero;
+    return false;
+}
+```
+
+Being able to specify a plane gives this some versatility. For example, I can pass in the plane of the net to see if the ball will cross the net. I can also pass in a plane near the floor to tell if a player can dive for a ball.
+
+---
+
+**2. How can a player tell whether the ball is coming towards them?**
+
+The solution is pretty simple. We create two vectors a) the ball's velocity and b) the difference between the ball and player's positions. After flattening and normalizing both vectors, we take the dot product. If it's around 1.0, that means the velocity is basically on the same path as the difference in position. By allowing a small deviation from the exact value, we can account for balls that aren't coming directly head on.
+
+``` csharp
+// C#
+bool IsBallComingToPos(Vector3 dest, float deviation)
+{
+    Vector3 ballToDest = dest - ball.transform.position;
+
+    // Flatten
+    Vector2 v1 = new Vector2(ballToDest.x, ballToDest.z);
+    Vector2 v2 = new Vector2(ballVel.x, ballVel.z);
+
+    // Normalize
+    float dot = Vector2.Dot(v1.normalized, v2.normalized);
+    return Mathf.Abs(dot - 1) < deviation;
+}
+```
+
+Sounds kind of dumb, but some very non-volleyball things happen if they don't know.
+
+![Discrectionless Orgy](/res/blog/discretionless-orgy.gif)
+{:
+	title="Discrectionless Orgy"
+}

@@ -12,7 +12,7 @@ Lots of sports have a game series - soccer has FIFA, basketball has NBA2K, even 
 
 I'm trying to make a faithful simulation of indoor six-man volleyball, working title: <i><b>Volleyballad</b></i>. I want the player to be able to control one person on the team, while the rest are controlled by AI, with each AI having its own habits the player can pick up on.
 
-The first important task was to figure out how to get a player to hit a ball toward a target in a parabolic arc. Like volleyballs do. 
+The first important task was to figure out how to get a player to hit a ball toward a target in a parabolic arc.
 
 The hiccup here was figuring out what I could solve for, and choosing which variables I could give as constants. Initially I tried solving for the angle of the trajectory using the maximum height, but that left too many variables unaccounted for. Eventually, I found I could pass the destination and the airtime, and solve for velocity. Beginning with the equation of projectile motion...
 
@@ -58,7 +58,7 @@ Vector3 CalculateVelocityForTrajectory(Vector3 pos, Vector3 dst, float t) {
 
 As of now, if a player touches the ball, the ball's velocity is set to this value. Check it out in context below!
 
-![SET THE D](/res/blog/2016-2-9-volleyballad-trajectory.gif)
+![SET THE D](/res/blog/trajectory.gif)
 {:
 	title="SET THE D"
 }
