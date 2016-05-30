@@ -9,7 +9,7 @@
 title: The Stork's Nest
 email: # nope
 description: > # this means to ignore newlines until "baseurl:"
-  "ur a dip thong" - the stork, 2016
+  "one fish please" - the stork, 2016
 baseurl: "" # the subpath of your site, e.g. /blog
 url: "http://jcilla.github.io" # the base hostname & protocol for your site
 twitter_username: doubledanksauce
