@@ -1,0 +1,15 @@
+---
+layout: post
+title:  "Project BJ"
+date:   2017-05-03 22:44:00 -0800
+categories: UE4
+---
+<script src='https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML'></script>
+
+I'm starting a new project now that I'm naming Project BJ for now. All my code is prefixed BJ which stands for Bobby Jindal. It is completely unrelated.
+
+The dream for Project BJ is to capture the fantasy of Magicka - with a large compendium of spells at your disposal - but refine it so the player isn't just spamming ARSE bombs until everything dies. It is to put Dota2's Invoker in front of the keyboard, with intention and finesse behind each spell cast. It is to have the player "Learn to Spell! In Latin!"
+
+Currently, I'm planning for the game surrounding this concept to be an RPG, but that requires an enormous amount of content and it's just me right now...maybe it'll be a roguelike. We'll see.
+
+I've been trying (unsuccessfully) to fiddle with UE4's GameplayAbility system for a while now. Since UE4.15, the system was marked non-experimental, so I figure this is the perfect time to start. Let's begin!
